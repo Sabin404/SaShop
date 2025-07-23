@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./src/config/db.config');
 const cookieparser = require('cookie-parser');
+const authRoutes = require('./src/routes/auth/auth.route');
 
 //middlewares
 dotenv.config();
@@ -19,6 +20,9 @@ app.use(cookieparser());
 const PORT= process.env.PORT || 3000;
 //connecting to the database
 connectDB();
+
+//routes
+app.use('/api/auth', authRoutes);
 
 
 //listening to the server

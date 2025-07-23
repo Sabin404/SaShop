@@ -1,8 +1,10 @@
 import Form from '@/components/common/Form'
 import { registerFormControl } from '@/config'
 import React from 'react'
-import { Link } from 'react-router-dom'
-
+import { useDispatch } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import { registerUser } from '@/store/auth-slice/authSlice'
+import { toast } from 'sonner'
 const initialState={
   username: '',
   email: '',
@@ -10,7 +12,25 @@ const initialState={
 }
 const Register = () => {
   const [formData, setFormData] = React.useState(initialState)
-  const onSubmit = (e) => {}
+  const dispatch = useDispatch()
+  const navigate= useNavigate();
+
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    dispatch(registerUser(formData)).then((data)=>{
+      // console.log(data);
+      if(data?.payload?.success === true){
+        toast.success(data?.payload?.message || "Registration successful",
+          {
+            duration: 3000,
+            position: 'top-center',
+          }
+        );
+        navigate('/auth/login');
+      }
+    })
+  }
   return (
     <div className='mx-auto w-full max-w-md space-y-6'>
       <h2 className='text-2xl font-bold text-center'>Create new account</h2>
