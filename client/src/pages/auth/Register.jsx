@@ -28,6 +28,13 @@ const Register = () => {
           }
         );
         navigate('/auth/login');
+      }else{
+        toast.error(data?.payload?.message || "Registration failed",
+          {
+            duration: 3000,
+            position: 'top-center',
+          }
+        );
       }
     })
   }

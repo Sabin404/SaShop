@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -17,11 +17,21 @@ import Account from './pages/shopping-view/Account';
 import CheckAuth from './components/common/CheckAuth';
 import Register from './pages/auth/Register';
 import Login from './pages/auth/Login';
+import { useDispatch, useSelector } from 'react-redux';
+import { checkAuth } from './store/auth-slice/authSlice';
+import { Skeleton } from './components/ui/skeleton';
 
 function App() {
-  const isAuthenticated = false;
-  const user=null;
+  const{isAuthenticated,user,loading}=useSelector(state=>state.auth);
+  const dispatch= useDispatch();
+  useEffect(()=>{
+    dispatch(checkAuth());
+  },[dispatch])
+  
 
+  if(loading){
+    return <Skeleton className="h-[200px] w-[800px] bg-black " />
+  }
   return (
     <div className='flex flex-col overflow-hidden bg-white'>
       <Routes>

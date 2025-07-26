@@ -1,30 +1,46 @@
-import React from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
+import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 
-const CheckAuth = ({isAuthenticated,user,children}) => {
+const CheckAuth = ({ isAuthenticated, user, children }) => {
   const location = useLocation();
-  if(!isAuthenticated && !(location.pathname.includes('/login') || location.pathname.includes('/register'))){
-    return <Navigate to='/auth/login'/>
-  }
-  if(isAuthenticated && (location.pathname.includes('/login') || location.pathname.includes('/register'))){
-    if(user?.role==='admin'){
-      return <Navigate to='/admin/dashboard'/>
-    }else{
-      return <Navigate to='/shop/home'/>
-    }
-  }
-  if(isAuthenticated && user?.role!=='admin' && location.pathname.includes('admin')){
-    return <Navigate to='/unauth-page'/>
-  }
-  if(isAuthenticated && user?.role==='admin' && location.pathname.includes('shop')){
-    return <Navigate to='/admin/dashboard'/>
+  const path = location.pathname;
+
+  // Avoid crashes if user is null/undefined
+  const role = user?.role;
+
+  // Redirect to login if not authenticated and trying to access protected routes
+  if (
+    !isAuthenticated &&
+    !path.includes('/login') &&
+    !path.includes('/register')
+  ) {
+    return <Navigate to="/auth/login" replace />;
   }
 
-  return (
-    <>
-      {children}
-    </>
-  )
-}
+  // Redirect authenticated users away from login/register pages
+  if (
+    isAuthenticated &&
+    (path.includes('/login') || path.includes('/register'))
+  ) {
+    return role === 'admin' ? (
+      <Navigate to="/admin/dashboard" replace />
+    ) : (
+      <Navigate to="/shop/home" replace />
+    );
+  }
 
-export default CheckAuth
+  // Prevent non-admin users from accessing any admin routes
+  if (isAuthenticated && role !== 'admin' && path.startsWith('/admin')) {
+    return <Navigate to="/unauth-page" replace />;
+  }
+
+  // Redirect admin users away from shop pages to admin dashboard
+  if (isAuthenticated && role === 'admin' && path.startsWith('/shop')) {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+
+  // If none of the above, render children (authorized access)
+  return <>{children}</>;
+};
+
+export default CheckAuth;
