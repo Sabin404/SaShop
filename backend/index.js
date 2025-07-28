@@ -1,13 +1,19 @@
 const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
+dotenv.config();
 const cors = require('cors');
 const connectDB = require('./src/config/db.config');
 const cookieparser = require('cookie-parser');
 const authRoutes = require('./src/routes/auth/auth.route');
-
+const productsRoutes = require('./src/routes/admin/product.route');
 //middlewares
-dotenv.config();
+
+// console.log("Inside index.js, Cloudinary keys:", {
+//   key: process.env.CLOUDINARY_API_KEY,
+//   name: process.env.CLOUDINARY_CLOUD_NAME,
+//   secret: process.env.CLOUDINARY_API_SECRET
+// });
 app.use(cors({
   origin:'http://localhost:5173',
   credentials: true,
@@ -23,6 +29,7 @@ connectDB();
 
 //routes
 app.use('/api/auth', authRoutes);
+app.use('/api/admin/products', productsRoutes);
 
 
 //listening to the server

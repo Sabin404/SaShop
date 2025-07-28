@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { FileIcon, UploadCloudIcon, XIcon } from 'lucide-react'
 import { Button } from '../ui/button'
+import axios from 'axios'
 
 const Imageupload = ({
   imageFile,
   setImageFile,
   uploadedImageUrl,
-  setUploadedImageUrl
+  setUploadedImageUrl,
+  imageLoadingState,
+  setImageLoadingState
 }) => {
   const inputRef = React.useRef(null)
 
@@ -38,6 +41,30 @@ const Imageupload = ({
     }
   }
 
+  async function uploadImageToCloudinary() {
+    setImageLoadingState(true)
+    try {
+      
+      const data = new FormData();
+      data.append('image', imageFile);
+      const response = await axios.post('http://localhost:3000/api/admin/products/upload-image', data);
+
+      if (response?.data?.url) {
+        setUploadedImageUrl(response.data.url);
+        console.log("Image uploaded");
+        // console.log(response.data.url.url);
+        setImageLoadingState(false)
+        
+        
+      }
+    } catch (error) {
+      console.error("Upload failed:", error.response?.data || error.message);
+    }
+  }
+
+  useEffect(() => {
+    if (imageFile !== null) uploadImageToCloudinary();
+  }, [imageFile]);
   // console.log("imageFile:", imageFile)
 
   return (

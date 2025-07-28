@@ -27,11 +27,11 @@ const Products = () => {
 
   const [imageFile, setImageFile] = React.useState(null)
   const [uploadedImageUrl, setUploadedImageUrl] = React.useState(null)
-
+  const [imageLoadingState ,setImageLoadingState]=React.useState(false)
 
   function onSubmit() {
-    // Handle form submission logic here
   }
+console.log(formData);
 
   return (
     <div className="w-full px-4 py-6 md:px-8">
@@ -64,7 +64,14 @@ const Products = () => {
               Add New Product
             </SheetTitle>
           </SheetHeader>
-          <Imageupload imageFile={imageFile} setImageFile={setImageFile} uploadedImageUrl={uploadedImageUrl} setUploadedImageUrl={setUploadedImageUrl}/>
+          <Imageupload 
+          imageFile={imageFile} 
+          setImageFile={setImageFile}
+           uploadedImageUrl={uploadedImageUrl} 
+           setUploadedImageUrl={setUploadedImageUrl}
+            setImageLoadingState={setImageLoadingState}
+            imageLoadingState={imageLoadingState}
+           />
           <Form
             formData={formData}
             setFormData={setFormData}
