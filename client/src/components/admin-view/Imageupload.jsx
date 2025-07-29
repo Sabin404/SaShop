@@ -4,6 +4,7 @@ import { Input } from '../ui/input'
 import { FileIcon, UploadCloudIcon, XIcon } from 'lucide-react'
 import { Button } from '../ui/button'
 import axios from 'axios'
+import { Skeleton } from '../ui/skeleton'
 
 const Imageupload = ({
   imageFile,
@@ -91,7 +92,8 @@ const Imageupload = ({
             </div>
           </Label>
         ) : (
-          <div className="flex items-center justify-between">
+          imageLoadingState?(<Skeleton className='h-10 bg-gray-100'/>):
+          (<div className="flex items-center justify-between">
             <div className="flex items-center">
               <FileIcon className="w-8 h-8 text-primary mr-2" />
               <p className="text-sm font-medium">{imageFile.name}</p>
@@ -105,7 +107,7 @@ const Imageupload = ({
               <XIcon className="w-4 h-4" />
               <span className="sr-only">Remove File</span>
             </Button>
-          </div>
+          </div>)
         )}
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Form from '@/components/common/Form'
 import { Button } from '@/components/ui/button'
 import {
@@ -7,14 +7,18 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
+import { toast } from 'sonner'
 import { addProductFormElements } from '@/config'
 import Imageupload from '@/components/admin-view/Imageupload'
+import { useDispatch, useSelector } from 'react-redux'
+import { addNewProduct, fetchAllProducts } from '@/store/admin/product-slice'
+import ProductTile from './ProductTile'
 
 const initialFormData = {
   image: null,
   title: '',
   description: '',
-  catagory: '',
+  category: '',
   price: '',
   brand: '',
   salePrice: '',
@@ -27,11 +31,35 @@ const Products = () => {
 
   const [imageFile, setImageFile] = React.useState(null)
   const [uploadedImageUrl, setUploadedImageUrl] = React.useState(null)
-  const [imageLoadingState ,setImageLoadingState]=React.useState(false)
+  const [imageLoadingState, setImageLoadingState] = React.useState(false)
+  const { productList } = useSelector(state => state.adminProducts)
+  const dispatch = useDispatch();
+  function onSubmit(e) {
+    e.preventDefault();
+    dispatch(addNewProduct({
+      ...formData,
+      image: uploadedImageUrl.url
+    })).then((data) => {
+      if (data.payload.success) {
+        dispatch(fetchAllProducts())
+        setImageFile(null);
+        setOpenCreateProductDialog(false)
+        setFormData(initialFormData);
+        toast.error(data?.payload?.message || "Product added successfully",
+          {
+            duration: 3000,
+            position: 'top-center',
+          }
+        );
+      }
 
-  function onSubmit() {
+    })
+
   }
-console.log(formData);
+  useEffect(() => {
+    dispatch(fetchAllProducts())
+  }, [dispatch])
+  console.log(productList,uploadedImageUrl);
 
   return (
     <div className="w-full px-4 py-6 md:px-8">
@@ -52,7 +80,10 @@ console.log(formData);
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
         {/* Replace this with product cards */}
         <div className="col-span-full text-center text-gray-500">
-          No products available.
+          {
+            productList && productList.length>0 ?
+            productList.map(productItem => <ProductTile product={productItem}/>):null
+          }
         </div>
       </div>
 
@@ -60,18 +91,18 @@ console.log(formData);
       <Sheet open={openCreateProductDialog} onOpenChange={setOpenCreateProductDialog}>
         <SheetContent side="right" className="w-full max-w-md overflow-auto bg-white p-6 shadow-xl">
           <SheetHeader className="mb-4">
-            <SheetTitle className="text-xl font-semibold text-gray-800">
+            <SheetTitle className="text-xl font-semibold text-gray-800 ">
               Add New Product
             </SheetTitle>
           </SheetHeader>
-          <Imageupload 
-          imageFile={imageFile} 
-          setImageFile={setImageFile}
-           uploadedImageUrl={uploadedImageUrl} 
-           setUploadedImageUrl={setUploadedImageUrl}
+          <Imageupload
+            imageFile={imageFile}
+            setImageFile={setImageFile}
+            uploadedImageUrl={uploadedImageUrl}
+            setUploadedImageUrl={setUploadedImageUrl}
             setImageLoadingState={setImageLoadingState}
             imageLoadingState={imageLoadingState}
-           />
+          />
           <Form
             formData={formData}
             setFormData={setFormData}
