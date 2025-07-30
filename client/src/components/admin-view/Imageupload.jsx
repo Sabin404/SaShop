@@ -12,7 +12,8 @@ const Imageupload = ({
   uploadedImageUrl,
   setUploadedImageUrl,
   imageLoadingState,
-  setImageLoadingState
+  setImageLoadingState,
+  isEditMode
 }) => {
   const inputRef = React.useRef(null)
 
@@ -67,6 +68,7 @@ const Imageupload = ({
     if (imageFile !== null) uploadImageToCloudinary();
   }, [imageFile]);
   // console.log("imageFile:", imageFile)
+  console.log(isEditMode,"Is edit mode")
 
   return (
     <div className="w-full max-w-md mx-auto mt-4">
@@ -74,7 +76,7 @@ const Imageupload = ({
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className="border-2 border-dashed rounded-lg p-4"
+        className={`border-2 border-dashed rounded-lg p-4 ${isEditMode? 'opacity-20':''}`}
       >
         <Input
           id="image-upload"
@@ -82,11 +84,12 @@ const Imageupload = ({
           className="hidden"
           ref={inputRef}
           onChange={handleFileChange}
+          disabled={isEditMode}
         />
 
         {!imageFile ? (
-          <Label htmlFor="image-upload">
-            <div className="flex flex-col items-center justify-center h-32 cursor-pointer w-full">
+          <Label htmlFor="image-upload" className={`${isEditMode ?"cursor-not-allowed":''}`}>
+            <div className={` ${isEditMode ?'cursor-not-allowed':''}flex flex-col items-center justify-center h-32 cursor-pointer w-full`}>
               <UploadCloudIcon className="w-8 h-8 text-gray-500 mb-2" />
               <span className="text-gray-500">Drag & Drop or Click to Upload Image</span>
             </div>

@@ -81,7 +81,7 @@ const Form = ({
       <Button
         disabled={isBtnDisabled}
         type="submit"
-        className="w-full bg-primary text-white hover:bg-primary/90 transition-all"
+        className="w-full bg-primary text-white hover:bg-primary/90 bg-black transition-all"
       >
         {buttonText || "Submit"}
       </Button>
