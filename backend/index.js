@@ -7,6 +7,7 @@ const connectDB = require('./src/config/db.config');
 const cookieparser = require('cookie-parser');
 const authRoutes = require('./src/routes/auth/auth.route');
 const productsRoutes = require('./src/routes/admin/product.route');
+const shopProductRoute = require('./src/routes/shop/product.route');
 //middlewares
 
 // console.log("Inside index.js, Cloudinary keys:", {
@@ -31,6 +32,10 @@ connectDB();
 app.use('/api/auth', authRoutes);
 app.use('/api/admin/products', productsRoutes);
 
+
+//shop
+
+app.use('/api/shop/products',shopProductRoute)
 
 //listening to the server
 app.listen(PORT, () => {

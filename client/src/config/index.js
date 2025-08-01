@@ -1,5 +1,5 @@
 
-export const registerFormControl=[
+export const registerFormControl = [
   {
     name: 'username',
     type: 'text',
@@ -26,8 +26,8 @@ export const registerFormControl=[
   }
 ]
 
-export const loginFormControl=[
-  
+export const loginFormControl = [
+
   {
     name: 'email',
     type: 'email',
@@ -107,3 +107,62 @@ export const addProductFormElements = [
     placeholder: "Enter total stock",
   },
 ];
+
+export const shoppingViewHeaderItems = [
+  {
+    id: 'home',
+    label: 'Home',
+    path: '/shop/home'
+  },
+  {
+    id: 'men',
+    label: 'Men',
+    path: '/shop/listing'
+  },
+  {
+    id: 'women',
+    label: 'Women',
+    path: '/shop/listing'
+  },
+  {
+    id: 'kids',
+    label: 'Kids',
+    path: '/shop/listing'
+  },
+  {
+    id: 'footware',
+    label: 'Footware',
+    path: '/shop/listing'
+  },
+  {
+    id: 'accessories',
+    label: 'Accessories',
+    path: '/shop/listing'
+  }
+]
+
+export const filterOptions = {
+  category: [
+    { id: "men", label: "Men" },
+    { id: "women", label: "Women" },
+    { id: "kids", label: "Kids" },
+    { id: "accessories", label: "Accessories" },
+    { id: "footware", label: "Footware" },
+  ],
+  brand: [
+    { id: "nike", label: "Nike" },
+    { id: "adidas", label: "Adidas" },
+    { id: "puma", label: "Puma" },
+    { id: "levi", label: "Levi's" },
+    { id: "zara", label: "Zara" },
+    { id: "h&m", label: "H&M" },
+  ]
+
+}
+
+export const sortOptions=[
+  {id:"price-lowtohigh",label:'Price Low to High'},
+  {id:"price-hightolow",label:'Price High to Low'},
+  {id:"atoz",label:'Title: A-Z'},
+  {id:"ztoa",label:'Title: Z-A'},
+]
