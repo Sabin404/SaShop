@@ -45,7 +45,7 @@ const dispatch=useDispatch()
             <Avatar className='h-9 w-9 bg-black hover:cursor-pointer'>
               {/* <AvatarImage src={user.avatarUrl} alt={user.username} /> */}
               <AvatarFallback className='bg-primary text-white font-bold'>
-                {user.username?.[0]?.toUpperCase()}
+                {user.username[0]?.toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </button>

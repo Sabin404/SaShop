@@ -8,9 +8,11 @@ const initialState={
 }
 
 
-export const fetchAllProducts = createAsyncThunk('/products/fetchAllFilteredProducts',async(formData)=>{
+export const fetchAllProducts = createAsyncThunk('/products/fetchAllFilteredProducts',async()=>{
   const result = await axios.get('http://localhost:3000/api/shop/products/get');
-  return result?.data;
+  // console.log('API response data:', result.data);
+  return result?.data?.data;
+  
 })
 
 const shopProductSlice= createSlice({
