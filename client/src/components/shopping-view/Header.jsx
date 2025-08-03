@@ -25,6 +25,8 @@ function MenuItem() {
 
 function HeaderRightContent() {
   const { isAuthenticated, user } = useSelector(state => state.auth)
+  // console.log(user);
+  
   const navigate= useNavigate()
 const dispatch=useDispatch()
   const handleLogout=()=>{

@@ -1,31 +1,104 @@
 import Filter from '@/components/shopping-view/Filter'
+import ProductDetails from '@/components/shopping-view/ProductDetails'
+import ProducTileShoping from '@/components/shopping-view/ProducTileShoping'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { sortOptions } from '@/config'
-import { fetchAllProducts } from '@/store/shop/product-slice'
+import { fetchAllProductDetails, fetchAllProducts } from '@/store/shop/product-slice'
 import { DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem } from '@radix-ui/react-dropdown-menu'
 import { ArrowUpDownIcon } from 'lucide-react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useSearchParams } from 'react-router-dom'
 
 const Listing = () => {
   const dispatch = useDispatch()
 
-  // Fix fallback to {} instead of []
-  const { productList  } = useSelector(state => state.shopProducts )
+  const { productList,productDetails } = useSelector(state => state.shopProducts)
+  const [filters, setFilters] = useState({})
+  const [sort, setSort] = useState(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [open,setOpen]=useState(false)
 
-  const shopProducts = useSelector(state => state.shopProducts);
-console.log('Redux shopProducts:', shopProducts);
+  // const shopProducts = useSelector(state => state.shopProducts);
+  // console.log('Redux shopProducts:', shopProducts);
+
+  function createSearchParamsHelper(filterParams) {
+    const queryParams = [];
+    for (const [key, value] of Object.entries(filterParams)) {
+      if (Array.isArray(value) && value.length > 0) {
+        const paramValue = value.join(',');
+        queryParams.push(`${key}=${encodeURIComponent(paramValue)}`)
+      }
+    }
+    // console.log(queryParams);
+
+    return queryParams.join('&');
+  }
 
   useEffect(() => {
-    dispatch(fetchAllProducts())
-  }, [dispatch])
+    if (filters !== null && sort !== null) {
+      dispatch(fetchAllProducts({ filterParams: filters, sortParams: sort }))
+    }
+  }, [dispatch, sort, filters])
+
+  useEffect(()=>{
+    if(productDetails!==null) setOpen(true)
+  },[productDetails])
 
   // console.log('productList:', productList)
 
+  function handleSort(value) {
+    setSort(value)
+  }
+
+  function handleGetProductDetails(getCurrentProductId) {
+    // console.log(getCurrentProductId);
+    dispatch(fetchAllProductDetails(getCurrentProductId))
+
+  }
+
+  function handleFilter(getSectionId, getCurrentOption) {
+    // console.log(getCurrentOption,getSectionId);
+    let cpyFilters = { ...filters };
+    const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId)
+    if (indexOfCurrentSection === -1) {
+      cpyFilters = {
+        ...cpyFilters,
+        [getSectionId]: [getCurrentOption]
+      }
+    } else {
+      const indexOfCurrentOption = cpyFilters[getSectionId].indexOf(getCurrentOption)
+      if (indexOfCurrentOption === -1) {
+        cpyFilters[getSectionId].push(getCurrentOption)
+      } else {
+        cpyFilters[getSectionId].splice(indexOfCurrentOption, 1)
+      }
+    }
+    setFilters(cpyFilters)
+    sessionStorage.setItem("Filters", JSON.stringify(cpyFilters))
+
+  }
+
+  useEffect(() => {
+    setSort('price-lowtohigh')
+    setFilters(JSON.parse(sessionStorage.getItem('Filters')) || {})
+  }, [])
+
+  useEffect(() => {
+    if (filters && Object.keys(filters).length > 0) {
+      const createQueryString = createSearchParamsHelper(filters)
+      setSearchParams(new URLSearchParams(createQueryString))
+    }
+  }, [filters])
+  // console.log(filters,searchParams);
+  // console.log(productDetails);
+  
+
+
   return (
     <div className='grid grid-cols-1 md:grid-cols-[300px_1fr] gap-5 p-4 md:p-6'>
-      <Filter />
+      <Filter filters={filters} handleFilter={handleFilter} />
       <div className="bg-background w-full rounded-lg shadow-sm">
         <div className='p-4 border-b flex items-center shadow-2xs justify-between'>
           <h2 className='text-lg font-bold'>All products</h2>
@@ -39,7 +112,7 @@ console.log('Redux shopProducts:', shopProducts);
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align='end' className='w-[200px]'>
-                <DropdownMenuRadioGroup>
+                <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
                   {sortOptions.map(sortItem => (
                     <DropdownMenuRadioItem key={sortItem.id} value={sortItem.id}>
                       {sortItem.label}
@@ -51,16 +124,16 @@ console.log('Redux shopProducts:', shopProducts);
           </div>
         </div>
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4'>
-          {/* Render product items */}
-          {productList.map(product => (
-            <div key={product._id} className="border rounded p-4 shadow-sm">
-              <img src={product.image} alt={product.title} className="w-full h-40 object-cover rounded" />
-              <h3 className="mt-2 font-semibold">{product.title}</h3>
-              <p className="text-muted-foreground">Rs. {product.price}</p>
-            </div>
-          ))}
+          {
+            productList && productList.length > 0 ?
+              productList.map(productItem =>
+                <ProducTileShoping
+                  handleGetProductDetails={handleGetProductDetails}
+                  product={productItem} />) : ''
+          }
         </div>
       </div>
+      <ProductDetails open={open} setOpen={setOpen} productDetails={productDetails} />
     </div>
   )
 }
