@@ -8,6 +8,7 @@ const cookieparser = require('cookie-parser');
 const authRoutes = require('./src/routes/auth/auth.route');
 const productsRoutes = require('./src/routes/admin/product.route');
 const shopProductRoute = require('./src/routes/shop/product.route');
+const shopCartRoute=require('./src/routes/shop/cart.route')
 //middlewares
 
 // console.log("Inside index.js, Cloudinary keys:", {
@@ -36,6 +37,7 @@ app.use('/api/admin/products', productsRoutes);
 //shop
 
 app.use('/api/shop/products',shopProductRoute)
+app.use('/api/shop/cart',shopCartRoute)
 
 //listening to the server
 app.listen(PORT, () => {

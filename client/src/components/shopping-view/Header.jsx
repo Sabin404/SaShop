@@ -1,5 +1,5 @@
 import { HouseIcon, LogOut, Menu, ShoppingCart, UserCog } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 import { useDispatch, useSelector } from 'react-redux'
@@ -10,6 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu'
 import { logoutUser } from '@/store/auth-slice/authSlice'
+import CartWrapper from './CartWrapper'
 
 
 function MenuItem() {
@@ -26,19 +27,25 @@ function MenuItem() {
 function HeaderRightContent() {
   const { isAuthenticated, user } = useSelector(state => state.auth)
   // console.log(user);
-  
-  const navigate= useNavigate()
-const dispatch=useDispatch()
-  const handleLogout=()=>{
+  const [openCartSheet,setOpenCartSheet]=useState(false)
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const handleLogout = () => {
     dispatch(logoutUser())
   }
   return (
     <div className='flex items-center gap-4'>
       {/* Cart Button */}
-      <Button variant="outline" size="icon" className="relative">
-        <ShoppingCart className='h-5 w-5' />
-        <span className='sr-only'>User cart</span>
-      </Button>
+      <Sheet open={openCartSheet} onOpenChange={()=>setOpenCartSheet(false)} >
+        <Button
+        onClick={()=>setOpenCartSheet(true)}
+        variant="outline" size="icon" className="relative">
+          <ShoppingCart className='h-5 w-5' />
+          <span className='sr-only'>User cart</span>
+        </Button>
+        <CartWrapper/>
+      </Sheet>
 
       {/* User Dropdown */}
       <DropdownMenu>
@@ -58,13 +65,13 @@ const dispatch=useDispatch()
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="cursor-pointer"
-          onClick={()=>navigate('/shop/account')}
+            onClick={() => navigate('/shop/account')}
           >
             <UserCog className='w-4 h-4 mr-2' />
             Account
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer"
-          onClick={handleLogout}
+            onClick={handleLogout}
           >
             <LogOut className='w-4 h-4 mr-2' />
             Logout
@@ -95,13 +102,13 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent side='left' className='w-full max-w-xs'>
               <MenuItem />
-              <HeaderRightContent/>
+              <HeaderRightContent />
             </SheetContent>
           </Sheet>
           <div className='hidden lg:block'>
             <MenuItem />
           </div>
-           <div className='hidden lg:block'>
+          <div className='hidden lg:block'>
             <HeaderRightContent />
           </div>
         </div>
