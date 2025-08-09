@@ -4,13 +4,13 @@ import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { brandOptionsMap, categoryOptionsMap } from '@/config'
 
-const ProducTileShoping = ({ product,handleGetProductDetails }) => {
+const ProducTileShoping = ({ product, handleGetProductDetails, handleAddToCart }) => {
   // console.log(product);
-  
+
   return (
-    <div onClick={()=>handleGetProductDetails(product?._id)}>
+    <div >
       <Card className='w-full max-w-sm mx-auto'>
-        <div>
+        <div onClick={() => handleGetProductDetails(product?._id)}>
           <div className='relative '>
             <img
               src={product?.image}
@@ -35,10 +35,12 @@ const ProducTileShoping = ({ product,handleGetProductDetails }) => {
 
             </div>
           </CardContent>
-          <CardFooter>
-            <Button className='bg-red-300'>Add to Cart</Button>
-          </CardFooter>
         </div>
+        <CardFooter>
+          <Button className='bg-black text-white hover:cursor-pointer'
+            onClick={() => handleAddToCart(product?._id)}
+          >Add to Cart</Button>
+        </CardFooter>
       </Card>
     </div>
   )

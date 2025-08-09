@@ -5,11 +5,38 @@ import { Label } from "../ui/label";
 import { StarIcon } from "lucide-react";
 import { Input } from "../ui/input";
 
+import { addToCart } from "@/store/shop/cart-slice";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
+import { setProductDetails } from "@/store/shop/product-slice";
+
 const ProductDetails = ({ open, setOpen, productDetails }) => {
+  const dispatch = useDispatch()
+  const { user } = useSelector(state => state.auth)
+  const handleAddToCart = (getCurrentId) => {
+    dispatch(addToCart({
+      userId: user?.userId,
+      productId: getCurrentId,
+      quantity: 1
+    })).then((data) => {
+      if (data?.payload?.success) {
+        toast.success(data.payload.message || "Product added successfully", {
+          duration: 3000,
+          position: "top-center",
+        });
+      }
+    })
+  }
+  // console.log(productDetails);
+  const handleChange=()=>{
+    setOpen(false)
+    dispatch(setProductDetails())
+  }
+
   return (
     <Dialog
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={()=>handleChange()}
       className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-40"
     >
       <DialogContent
@@ -47,11 +74,10 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
             {productDetails?.price && (
               <div className="flex items-center gap-4 mb-6">
                 <p
-                  className={`text-2xl font-semibold ${
-                    productDetails?.salePrice > 0
+                  className={`text-2xl font-semibold ${productDetails?.salePrice > 0
                       ? "text-gray-400 line-through"
                       : "text-green-600"
-                  }`}
+                    }`}
                 >
                   ${Number(productDetails.price).toFixed(2)}
                 </p>
@@ -65,6 +91,7 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
 
             {/* Add to Cart Button */}
             <Button
+              onClick={() => handleAddToCart(productDetails?._id)}
               aria-label="Add product to cart"
               className="w-full sm:w-auto bg-black hover:bg-gray-800 text-white rounded-full py-3 px-6 font-semibold transition-colors shadow-md"
             >

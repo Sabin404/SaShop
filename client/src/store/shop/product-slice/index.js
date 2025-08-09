@@ -17,7 +17,7 @@ export const fetchAllProducts = createAsyncThunk('/products/fetchAllFilteredProd
     })
   const result = await axios.get(`http://localhost:3000/api/shop/products/get?${query}`);
   // console.log('API response data:', result.data);
-  return result?.data?.data;
+  return result?.data.data;
   
 })
 
@@ -33,13 +33,19 @@ export const fetchAllProductDetails = createAsyncThunk('/products/fetchAllFilter
 const shopProductSlice= createSlice({
   name:'shoppingProducts',
   initialState,
-  reducers:{},
+  reducers:{
+    setProductDetails:(state)=>{
+      state.productDetails=null
+    }
+  },
   extraReducers:(builder)=>{
     builder.addCase(fetchAllProducts.pending,(state,action)=>{
       state.isLoading=true;
     }).addCase(fetchAllProducts.fulfilled,(state,action)=>{
       state.isLoading=false;
       state.productList=action.payload;
+      // console.log(action.payload);
+      
     }).addCase(fetchAllProducts.rejected,(state,action)=>{
       state.isLoading=false;
       state.productList=[]
@@ -55,5 +61,6 @@ const shopProductSlice= createSlice({
     })
   }
 })
+export const  {setProductDetails}= shopProductSlice.actions
 
 export default shopProductSlice.reducer

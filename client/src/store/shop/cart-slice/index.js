@@ -14,12 +14,12 @@ export const addToCart = createAsyncThunk('/cart/addToCart',async({userId,produc
   return response.data
 })
 export const fetchCartItems = createAsyncThunk('/cart/fetchCartItems',async(userId)=>{
-  const response = await axios.get(`http://localhost:3000/api/shop/cart/add/${userId}`)
+  const response = await axios.get(`http://localhost:3000/api/shop/cart/get/${userId}`)
 
   return response.data
 })
 export const deleteCartItem = createAsyncThunk('/cart/deleteCartItem',async({userId,productId})=>{
-  const response = await axios.delete(`http://localhost:3000/api/shop/cart/add/${userId}/${productId}`)
+  const response = await axios.delete(`http://localhost:3000/api/shop/cart/${userId}/${productId}`)
 
   return response.data
 })
@@ -40,7 +40,7 @@ const shoppingCartSlice= createSlice({
       state.isLoading=true
     }).addCase(addToCart.fulfilled,(state,action)=>{
       state.isLoading=false
-      state.cartItems=action.payload.data
+      state.cartItems=action.payload.data.items
     }).addCase(addToCart.rejected,(state)=>{
       state.isLoading=false
       state.cartItems=[]
@@ -48,13 +48,14 @@ const shoppingCartSlice= createSlice({
       state.isLoading=true
     }).addCase(fetchCartItems.fulfilled,(state,action)=>{
       state.isLoading=false
-      state.cartItems=action.payload.data
+      state.cartItems=action.payload.data.items
     }).addCase(fetchCartItems.rejected,(state)=>{
       state.isLoading=false
-      state.cartItems=[]
+      // state.cartItems=[]
     }).addCase(updateCartItems.pending,(state)=>{
       state.isLoading=true
     }).addCase(updateCartItems.fulfilled,(state,action)=>{
+      // console.log('Update Cart Payload:', action.payload);
       state.isLoading=false
       state.cartItems=action.payload.data
     }).addCase(updateCartItems.rejected,(state)=>{

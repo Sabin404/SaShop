@@ -4,7 +4,9 @@ const Product = require('../../models/Product')
 const addToCart = async (req, res) => {
   try {
     const { userId, productId, quantity } = req.body;
-    if (!userId || !productId || !quantity <= 0) {
+    // console.log(req.body);
+
+    if (!userId || !productId || quantity <= 0) {
       return res.status(400).json({
         success: false,
         message: "Invalid data provided"
@@ -37,6 +39,7 @@ const addToCart = async (req, res) => {
     })
 
   } catch (error) {
+    console.error("Error in addToCart:", error);
     res.status(500).json({
       success: false,
       message: "Error occured"
@@ -48,22 +51,22 @@ const fetchCartItems = async (req, res) => {
   try {
     const { userId } = req.params;
     if (!userId) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
-        message: "User Id is requiired"
-      })
+        message: "User Id is required"
+      });
     }
 
     const cart = await Cart.findOne({ userId }).populate({
-      path: 'item.productId',
+      path: 'items.productId',
       select: 'image title price salePrice'
     })
 
     if (!cart) {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         message: "Cart Not found"
-      })
+      });
     }
 
     const validItems = cart.items.filter(productItem => productItem.productId)
@@ -78,7 +81,7 @@ const fetchCartItems = async (req, res) => {
       price: item.productId.price,
       title: item.productId.title,
       salePrice: item.productId.salePrice,
-      quamtity: item.productId.quantity,
+      quantity: item.productId.quantity
     }))
 
     return res.status(200).json({
@@ -100,7 +103,9 @@ const fetchCartItems = async (req, res) => {
 const updateCartQuantity = async (req, res) => {
   try {
     const { userId, productId, quantity } = req.body;
-    if (!userId || !productId || !quantity <= 0) {
+    // console.log(req.body);
+
+    if (!userId || !productId || quantity <= 0) {
       return res.status(400).json({
         success: false,
         message: "Invalid data provided"
@@ -109,7 +114,7 @@ const updateCartQuantity = async (req, res) => {
 
     const cart = await Cart.findOne({ userId });
     if (!cart) {
-      res.status(404).json({
+     return res.status(404).json({
         success: false,
         message: "Cart Not found"
       })
@@ -123,9 +128,9 @@ const updateCartQuantity = async (req, res) => {
       })
     }
 
-    cart.items[findCurrentProductIndex].quantity += quantity
+    cart.items[findCurrentProductIndex].quantity = quantity
     await cart.save();
-    await Cart.populate({
+    await cart.populate({
       path: "items.productId",
       select: "image title price salePrice",
     });
@@ -138,11 +143,13 @@ const updateCartQuantity = async (req, res) => {
       salePrice: item.productId ? item.productId.salePrice : null,
       quantity: item.quantity,
     }));
+    // console.log(populateCartItems);
+    
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       data: {
-        ...cart._doc,
+        // userId: cart.userId,
         items: populateCartItems,
       },
     });
@@ -157,6 +164,8 @@ const updateCartQuantity = async (req, res) => {
 const deleteCartItems = async (req, res) => {
   try {
     const { userId, productId } = req.params;
+    // console.log(req.params);
+
     if (!userId || !productId) {
       return res.status(400).json({
         success: false,
@@ -164,22 +173,22 @@ const deleteCartItems = async (req, res) => {
       });
     }
 
-    const cart = await Cart.findOne({userId}).populate({
+    const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
       select: "image title price salePrice",
     })
 
     if (!cart) {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         message: "Cart Not found"
       })
     }
 
-    cart.items=cart.items.filter(item=>item.productId._id.toString()!==productId)
+    cart.items = cart.items.filter(item => item.productId._id.toString() !== productId)
     await cart.save()
 
-    await Cart.populate({
+    await cart.populate({
       path: "items.productId",
       select: "image title price salePrice",
     });

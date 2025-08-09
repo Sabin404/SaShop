@@ -4,21 +4,24 @@ import ProducTileShoping from '@/components/shopping-view/ProducTileShoping'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { sortOptions } from '@/config'
+import { addToCart, fetchCartItems } from '@/store/shop/cart-slice'
 import { fetchAllProductDetails, fetchAllProducts } from '@/store/shop/product-slice'
 import { DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem } from '@radix-ui/react-dropdown-menu'
 import { ArrowUpDownIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
-
+import { toast } from 'sonner'
 const Listing = () => {
   const dispatch = useDispatch()
 
-  const { productList,productDetails } = useSelector(state => state.shopProducts)
+  const { productList, productDetails } = useSelector(state => state.shopProducts)
+  const { user } = useSelector(state => state.auth)
+  const { cartItems } = useSelector(state => state.shopCart)
   const [filters, setFilters] = useState({})
   const [sort, setSort] = useState(null)
   const [searchParams, setSearchParams] = useSearchParams()
-  const [open,setOpen]=useState(false)
+  const [open, setOpen] = useState(false)
 
   // const shopProducts = useSelector(state => state.shopProducts);
   // console.log('Redux shopProducts:', shopProducts);
@@ -42,9 +45,9 @@ const Listing = () => {
     }
   }, [dispatch, sort, filters])
 
-  useEffect(()=>{
-    if(productDetails!==null) setOpen(true)
-  },[productDetails])
+  useEffect(() => {
+    if (productDetails !== null) setOpen(true)
+  }, [productDetails])
 
   // console.log('productList:', productList)
 
@@ -80,6 +83,29 @@ const Listing = () => {
 
   }
 
+  function handleAddToCart(getCurrentProductId) {
+    console.log(user.userId);
+
+    // console.log(getCurrentProductId);
+    dispatch(addToCart({
+      userId: user?.userId,
+      productId: getCurrentProductId,
+      quantity: 1,
+    })).then(data => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.userId))
+        toast.error(data?.payload?.message || "Product added to Cart",
+          {
+            duration: 3000,
+            position: 'top-center',
+          }
+        
+        );
+      }
+    }
+    )
+
+  }
   useEffect(() => {
     setSort('price-lowtohigh')
     setFilters(JSON.parse(sessionStorage.getItem('Filters')) || {})
@@ -93,7 +119,9 @@ const Listing = () => {
   }, [filters])
   // console.log(filters,searchParams);
   // console.log(productDetails);
-  
+  // console.log(cartItems);
+
+
 
 
   return (
@@ -129,7 +157,8 @@ const Listing = () => {
               productList.map(productItem =>
                 <ProducTileShoping
                   handleGetProductDetails={handleGetProductDetails}
-                  product={productItem} />) : ''
+                  product={productItem}
+                  handleAddToCart={handleAddToCart} />) : ''
           }
         </div>
       </div>

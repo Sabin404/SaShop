@@ -1,5 +1,5 @@
 import { HouseIcon, LogOut, Menu, ShoppingCart, UserCog } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 import { useDispatch, useSelector } from 'react-redux'
@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback } from '../ui/avatar'
 import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu'
 import { logoutUser } from '@/store/auth-slice/authSlice'
 import CartWrapper from './CartWrapper'
+import { fetchCartItems } from '@/store/shop/cart-slice'
 
 
 function MenuItem() {
@@ -27,24 +28,36 @@ function MenuItem() {
 function HeaderRightContent() {
   const { isAuthenticated, user } = useSelector(state => state.auth)
   // console.log(user);
-  const [openCartSheet,setOpenCartSheet]=useState(false)
+  const { cartItems } = useSelector(state => state.shopCart)
+  const [openCartSheet, setOpenCartSheet] = useState(false)
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const handleLogout = () => {
     dispatch(logoutUser())
   }
+  // console.log(cartItems);
+  useEffect(() => {
+  if (user?.userId && (!cartItems || cartItems.length === 0)) {
+    dispatch(fetchCartItems(user.userId));
+  }
+}, [dispatch, user?.userId]);
+  // console.log(cartItems);
   return (
     <div className='flex items-center gap-4'>
       {/* Cart Button */}
-      <Sheet open={openCartSheet} onOpenChange={()=>setOpenCartSheet(false)} >
+      <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)} >
         <Button
-        onClick={()=>setOpenCartSheet(true)}
-        variant="outline" size="icon" className="relative">
+          onClick={() => setOpenCartSheet(true)}
+          variant="outline" size="icon" className="relative">
           <ShoppingCart className='h-5 w-5' />
           <span className='sr-only'>User cart</span>
         </Button>
-        <CartWrapper/>
+        <CartWrapper  cartItems={
+            cartItems  && cartItems.length > 0
+              ? cartItems
+              : []
+          } />
       </Sheet>
 
       {/* User Dropdown */}
