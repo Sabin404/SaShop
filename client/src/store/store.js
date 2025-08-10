@@ -3,12 +3,14 @@ import authReducer from "./auth-slice/authSlice";
 import AdminProductSlice from './admin/product-slice/index'
 import shopProductSlice from './shop/product-slice/index'
 import shopCartSlice from './shop/cart-slice/index'
+import shopAddressSlice from './shop/address-slice/index'
 const store = configureStore({  
   reducer:{
     auth:authReducer,
     adminProducts:AdminProductSlice,
     shopProducts:shopProductSlice,
-    shopCart:shopCartSlice
+    shopCart:shopCartSlice,
+    shopAddress:shopAddressSlice
   }
 })
 export default store;

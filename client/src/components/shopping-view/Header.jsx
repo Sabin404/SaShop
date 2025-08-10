@@ -12,13 +12,27 @@ import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu'
 import { logoutUser } from '@/store/auth-slice/authSlice'
 import CartWrapper from './CartWrapper'
 import { fetchCartItems } from '@/store/shop/cart-slice'
+import { Label } from '../ui/label'
 
 
 function MenuItem() {
+  const navigate = useNavigate()
+  const handleNavigate = (getCurr) => {
+    sessionStorage.removeItem('Filters');
+    const currentFilter = getCurr.id !== 'home' ?
+      {
+        category: [getCurr.id]
+      } : null
+    sessionStorage.setItem('Filters', JSON.stringify(currentFilter))
+    navigate(getCurr.path)
+  }
   return (
     <nav className='flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row'>
       {
-        shoppingViewHeaderItems.map(menuItem => <Link key={menuItem.id} to={menuItem.path} className='text-sm font-medium'>{menuItem.label}</Link>)
+        shoppingViewHeaderItems.map(menuItem =>
+          <Label key={menuItem.id}
+            onClick={() => handleNavigate(menuItem)}
+            className='text-sm font-medium'>{menuItem.label}</Label>)
       }
 
     </nav>
@@ -38,10 +52,10 @@ function HeaderRightContent() {
   }
   // console.log(cartItems);
   useEffect(() => {
-  if (user?.userId && (!cartItems || cartItems.length === 0)) {
-    dispatch(fetchCartItems(user.userId));
-  }
-}, [dispatch, user?.userId]);
+    if (user?.userId && (!cartItems || cartItems.length === 0)) {
+      dispatch(fetchCartItems(user.userId));
+    }
+  }, [dispatch, user?.userId]);
   // console.log(cartItems);
   return (
     <div className='flex items-center gap-4'>
@@ -53,11 +67,11 @@ function HeaderRightContent() {
           <ShoppingCart className='h-5 w-5' />
           <span className='sr-only'>User cart</span>
         </Button>
-        <CartWrapper  cartItems={
-            cartItems  && cartItems.length > 0
-              ? cartItems
-              : []
-          } />
+        <CartWrapper cartItems={
+          cartItems && cartItems.length > 0
+            ? cartItems
+            : []
+        } />
       </Sheet>
 
       {/* User Dropdown */}
