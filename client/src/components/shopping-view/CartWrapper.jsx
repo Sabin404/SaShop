@@ -4,10 +4,11 @@ import { Button } from '../ui/button';
 import CartItemsContent from './CartItemsContent';
 import { useSelector } from 'react-redux';
 import { Skeleton } from '../ui/skeleton';
+import { useNavigate } from 'react-router-dom';
 
-const CartWrapper = ({ cartItems }) => {
+const CartWrapper = ({ cartItems, setOpenCartSheet }) => {
   const { isLoading } = useSelector(state => state.shopCart);
-
+  const navigate = useNavigate()
   // Calculate total cart amount
   const totalCartAmount = cartItems && cartItems.length > 0
     ? cartItems.reduce((sum, currentItem) => {
@@ -81,7 +82,12 @@ const CartWrapper = ({ cartItems }) => {
       </div>
 
 
-      <Button className="w-full mt-6" disabled={isLoading}>
+      <Button
+        onClick={() => {
+          navigate('/shop/checkout')
+          setOpenCartSheet(false)
+        }}
+        className="w-full mt-6" disabled={isLoading}>
         Checkout
       </Button>
     </SheetContent>

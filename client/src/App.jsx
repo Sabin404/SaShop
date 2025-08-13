@@ -62,7 +62,7 @@ function App() {
         }>
           <Route path='home' element={<Home/>} />
           <Route path='listing' element={<Listing/>} />
-          <Route path='checkout' e lement={<Checkout/>} />
+          <Route path='checkout' element={<Checkout/>} />
           <Route path='account' element={<Account/>} />
         </Route>
         <Route path='*' element={<div>404 Not Found</div>} />
