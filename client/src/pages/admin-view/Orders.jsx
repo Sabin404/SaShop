@@ -1,9 +1,10 @@
+import AdminOrder from '@/components/admin-view/AdminOrder'
 import React from 'react'
 
 const Orders = () => {
   return (
-    <div>
-      Orders Page Content
+    <div className="w-full overflow-x-auto">
+      <AdminOrder />
     </div>
   )
 }
