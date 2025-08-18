@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { Button } from '../ui/button'
+import { Dialog } from '../ui/dialog'
+import OrderDetails from './OrderDetails'
 
 const AdminOrder = () => {
+  const[openDetailDialog,setOpenDetailDialog]=useState(false)
   return (
     <Card>
       <CardHeader>
@@ -27,7 +30,10 @@ const AdminOrder = () => {
               <TableCell className="px-4 py-2">Pending</TableCell>
               <TableCell className="px-4 py-2">$222</TableCell>
               <TableCell className="px-4 py-2">
-                <Button>View Details</Button>
+              <Dialog open={openDetailDialog} onOpenChange={setOpenDetailDialog}>
+                <Button onClick={()=>setOpenDetailDialog(true)}>View Details</Button>
+                <OrderDetails/>
+              </Dialog>
               </TableCell>
             </TableRow>
           </TableBody>
