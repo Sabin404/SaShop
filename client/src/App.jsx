@@ -18,6 +18,9 @@ import Login from './pages/auth/Login';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkAuth } from './store/auth-slice/authSlice';
 import { Skeleton } from './components/ui/skeleton';
+import StripeSuccess from './pages/shopping-view/StripeSuccess';
+import StripeCancel from './pages/shopping-view/StripeCancel';
+import OrderSuccess from './pages/shopping-view/OrderSuccess';
 
 function App() {
   const{isAuthenticated,user,loading}=useSelector(state=>state.auth);
@@ -64,6 +67,9 @@ function App() {
           <Route path='listing' element={<Listing/>} />
           <Route path='checkout' element={<Checkout/>} />
           <Route path='account' element={<Account/>} />
+          <Route path='stripe-success' element={<StripeSuccess/>} />
+          <Route path='stripe-cancel' element={<StripeCancel/>} />
+          <Route path='order-success' element={<OrderSuccess/>} />
         </Route>
         <Route path='*' element={<div>404 Not Found</div>} />
       </Routes>

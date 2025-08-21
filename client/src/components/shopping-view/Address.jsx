@@ -15,7 +15,7 @@ const initialData = {
   notes: ''
 }
 
-const Address = () => {
+const Address = ({setCurrentSelectedAddress}) => {
   const [formData, setFormData] = useState(initialData)
   const [currEditedId, setCurrEditedId] = useState(null)
   const dispatch = useDispatch()
@@ -117,7 +117,9 @@ const Address = () => {
               <AddressCard
                 handleEditAddress={handleEditAddress}
                 handleDeleteAddress={handleDeleteAddress}
-                addressInfo={singleAddressItem} />
+                addressInfo={singleAddressItem}
+                setCurrentSelectedAddress={setCurrentSelectedAddress}
+                 />
             )) : null
         }
       </div>
