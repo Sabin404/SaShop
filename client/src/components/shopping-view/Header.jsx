@@ -1,6 +1,6 @@
 import { HouseIcon, LogOut, Menu, ShoppingCart, UserCog } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 import { useDispatch, useSelector } from 'react-redux'
 import { shoppingViewHeaderItems } from '@/config'
@@ -16,7 +16,9 @@ import { Label } from '../ui/label'
 
 
 function MenuItem() {
+  const[searchParams,setSeacrchParam]=useSearchParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const handleNavigate = (getCurr) => {
     sessionStorage.removeItem('Filters');
     const currentFilter = getCurr.id !== 'home' && getCurr.id!=='product' ?
@@ -24,7 +26,9 @@ function MenuItem() {
         category: [getCurr.id]
       } : null
     sessionStorage.setItem('Filters', JSON.stringify(currentFilter))
-    navigate(getCurr.path)
+    location.pathname.includes('listing') 
+    && currentFilter!== null ?
+    setSeacrchParam(new URLSearchParams(`?category=${getCurr.id}`)): navigate(getCurr.path)
   }
   return (
     <nav className='flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row'>

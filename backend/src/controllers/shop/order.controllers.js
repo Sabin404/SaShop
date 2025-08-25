@@ -2,6 +2,7 @@
 const Order = require("../../models/Order");
 const stripe = require("../../helpers/stripe");
 const Cart = require('../../models/Cart')
+const Product = require('../../models/Product')
 
 const createOrder = async (req, res) => {
   try {
@@ -87,6 +88,21 @@ const capturePayment = async (req, res) => {
     order.orderStatus = 'confirmed';
     order.paymentId = paymentId;
     order.payerId = payerId;
+
+    for(let item of order.cartItems){
+      let product = await Product.findById(item.productId)
+      if(!product){
+        return res.status(404).json({
+          success:false,
+          message:`Not enough for this stock ${product.title}`
+        })
+      }
+
+      product.totalStock -= item.quantity
+
+      await product.save()
+
+    }
 
     const getCartId = order.cartId;
     if (getCartId) {

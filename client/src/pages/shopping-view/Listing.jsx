@@ -22,6 +22,7 @@ const Listing = () => {
   const [sort, setSort] = useState(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const [open, setOpen] = useState(false)
+  const categorySearchParams=searchParams.get('category')
 
   // const shopProducts = useSelector(state => state.shopProducts);
   // console.log('Redux shopProducts:', shopProducts);
@@ -109,7 +110,7 @@ const Listing = () => {
   useEffect(() => {
     setSort('price-lowtohigh')
     setFilters(JSON.parse(sessionStorage.getItem('Filters')) || {})
-  }, [])
+  }, [categorySearchParams])
 
   useEffect(() => {
     if (filters && Object.keys(filters).length > 0) {
@@ -121,6 +122,7 @@ const Listing = () => {
   // console.log(productDetails);
   // console.log(cartItems);
 
+console.log(productList);
 
 
 
