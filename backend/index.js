@@ -7,6 +7,7 @@ const connectDB = require('./src/config/db.config');
 const cookieparser = require('cookie-parser');
 const authRoutes = require('./src/routes/auth/auth.route');
 const productsRoutes = require('./src/routes/admin/product.route');
+const adminOrderRoutes = require('./src/routes/admin/order.routes');
 const shopProductRoute = require('./src/routes/shop/product.route');
 const shopCartRoute=require('./src/routes/shop/cart.route')
 const shopAddressRoute=require('./src/routes/shop/address.route')
@@ -34,6 +35,7 @@ connectDB();
 //routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin/products', productsRoutes);
+app.use('/api/admin/orders', adminOrderRoutes);
 
 
 //shop

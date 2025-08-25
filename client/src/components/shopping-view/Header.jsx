@@ -19,7 +19,7 @@ function MenuItem() {
   const navigate = useNavigate()
   const handleNavigate = (getCurr) => {
     sessionStorage.removeItem('Filters');
-    const currentFilter = getCurr.id !== 'home' ?
+    const currentFilter = getCurr.id !== 'home' && getCurr.id!=='product' ?
       {
         category: [getCurr.id]
       } : null
