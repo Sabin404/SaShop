@@ -84,29 +84,51 @@ const Listing = () => {
 
   }
 
-  function handleAddToCart(getCurrentProductId) {
-    console.log(user.userId);
+function handleAddToCart(getCurrentProductId, getTotalStock) {
+  const getCartItems = cartItems || [];
 
-    // console.log(getCurrentProductId);
-    dispatch(addToCart({
+  const indexOfCurrItem = getCartItems.findIndex(
+    item => item.productId?._id === getCurrentProductId
+  );
+
+  const currentQuantity = indexOfCurrItem > -1
+    ? getCartItems[indexOfCurrItem].quantity
+    : 0;
+
+  const newQuantity = currentQuantity + 1;
+
+  if (newQuantity > getTotalStock) {
+    toast.error(`Only ${getTotalStock} items available. You've already added ${currentQuantity}.`, {
+      duration: 3000,
+      position: 'top-center',
+    });
+    return;
+  }
+
+  dispatch(
+    addToCart({
       userId: user?.userId,
       productId: getCurrentProductId,
       quantity: 1,
-    })).then(data => {
-      if (data?.payload?.success) {
-        dispatch(fetchCartItems(user?.userId))
-        toast.error(data?.payload?.message || "Product added to Cart",
-          {
-            duration: 3000,
-            position: 'top-center',
-          }
-        
-        );
-      }
+    })
+  ).then(data => {
+    if (data?.payload?.success) {
+      dispatch(fetchCartItems(user?.userId));
+      toast.success(data?.payload?.message || "Product added to Cart", {
+        duration: 3000,
+        position: 'top-center',
+      });
+    } else {
+      toast.error(data?.payload?.message || "Failed to add product", {
+        duration: 3000,
+        position: 'top-center',
+      });
     }
-    )
+  });
+}
 
-  }
+
+
   useEffect(() => {
     setSort('price-lowtohigh')
     setFilters(JSON.parse(sessionStorage.getItem('Filters')) || {})
@@ -122,7 +144,7 @@ const Listing = () => {
   // console.log(productDetails);
   // console.log(cartItems);
 
-console.log(productList);
+// console.log(productList);
 
 
 

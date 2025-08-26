@@ -8,17 +8,21 @@ import { toast } from "sonner";
 const CartItemsContent = React.memo(({ cartItem }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
 
   if (!cartItem) return null;
 
   // product details nested inside productId
   const product = cartItem.productId;
+  // console.log(cartItem);
+  
+  // console.log(product.totalStock);
+  
   if (!product) return null;
 
   const price = Number(product?.salePrice) > 0 ? Number(product.salePrice) : Number(product?.price || 0);
   const quantity = Number(cartItem?.quantity) || 1;
   const total = isNaN(price) || isNaN(quantity) ? "0.00" : (price * quantity).toFixed(2);
-
 
   const userId = user?.userId;
 
@@ -35,12 +39,39 @@ const CartItemsContent = React.memo(({ cartItem }) => {
     }
   };
 
-  const handleCartQuantity = (action) => {
+  const handleCartQuantity = (cartItem, action) => {
     if (!userId || !product._id) return;
 
-    const updatedQuantity = action === "plus" ? quantity + 1 : Math.max(1, quantity - 1);
+    const currentQuantity = Number(cartItem?.quantity) || 1;
+    const totalStock = Number(product?.totalStock) || 0;
 
-    dispatch(updateCartItems({ userId, productId: product._id, quantity: updatedQuantity })).then((data) => {
+    let updatedQuantity = currentQuantity;
+    // console.log(currentQuantity,totalStock);
+    
+
+    if (action === "plus") {
+      if (currentQuantity + 1 > totalStock) {
+        toast.error(
+          `Only ${totalStock} items available. You've already added ${currentQuantity}.`,
+          {
+            duration: 3000,
+            position: "top-center",
+          }
+        );
+        return;
+      }
+      updatedQuantity = currentQuantity + 1;
+    }
+
+    if (action === "minus") {
+      updatedQuantity = Math.max(1, currentQuantity - 1);
+    }
+
+    dispatch(updateCartItems({
+      userId,
+      productId: product._id,
+      quantity: updatedQuantity,
+    })).then((data) => {
       if (data?.payload?.success) {
         toast.success(data.payload.message || "Cart updated successfully", {
           duration: 3000,
@@ -50,6 +81,10 @@ const CartItemsContent = React.memo(({ cartItem }) => {
       }
     });
   };
+
+
+  // console.log(cartItem);
+
 
   return (
     <div className="flex items-center space-x-4">
@@ -61,7 +96,7 @@ const CartItemsContent = React.memo(({ cartItem }) => {
         <div className="flex items-center mt-1 gap-2">
           <Button
             disabled={quantity === 1}
-            onClick={() => handleCartQuantity("minus")}
+            onClick={() => handleCartQuantity(cartItem, "minus")}
             variant="outline"
             size="icon"
             className="h-8 w-8 rounded-full"
@@ -73,7 +108,7 @@ const CartItemsContent = React.memo(({ cartItem }) => {
           <span className="font-semibold">{quantity}</span>
 
           <Button
-            onClick={() => handleCartQuantity("plus")}
+            onClick={() => handleCartQuantity(cartItem, "plus")}
             variant="outline"
             size="icon"
             className="h-8 w-8 rounded-full"

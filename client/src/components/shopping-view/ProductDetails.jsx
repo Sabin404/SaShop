@@ -11,22 +11,51 @@ import { toast } from "sonner";
 import { setProductDetails } from "@/store/shop/product-slice";
 
 const ProductDetails = ({ open, setOpen, productDetails }) => {
+  const {cartItems}= useSelector(state=>state.shopCart)
   const dispatch = useDispatch()
   const { user } = useSelector(state => state.auth)
-  const handleAddToCart = (getCurrentId) => {
-    dispatch(addToCart({
-      userId: user?.userId,
-      productId: getCurrentId,
-      quantity: 1
-    })).then((data) => {
-      if (data?.payload?.success) {
-        toast.success(data.payload.message || "Product added successfully", {
-          duration: 3000,
-          position: "top-center",
-        });
-      }
-    })
+
+  
+  const handleAddToCart = (getCurrentId, getTotalStock) => {
+  const getCartItems = cartItems || [];
+
+  const indexOfCurrItem = getCartItems.findIndex(
+    item => item.productId?._id === getCurrentId
+  );
+
+  const currentQuantity = indexOfCurrItem > -1
+    ? getCartItems[indexOfCurrItem].quantity
+    : 0;
+
+  const newQuantity = currentQuantity + 1;
+
+  if (newQuantity > getTotalStock) {
+    toast.error(`Only ${getTotalStock} items available. You've already added ${currentQuantity}.`, {
+      duration: 3000,
+      position: 'top-center',
+    });
+    return;
   }
+
+  dispatch(addToCart({
+    userId: user?.userId,
+    productId: getCurrentId,
+    quantity: 1
+  })).then((data) => {
+    if (data?.payload?.success) {
+      toast.success(data.payload.message || "Product added successfully", {
+        duration: 3000,
+        position: "top-center",
+      });
+    } else {
+      toast.error(data.payload.message || "Failed to add product", {
+        duration: 3000,
+        position: "top-center",
+      });
+    }
+  });
+};
+
   // console.log(productDetails);
   const handleChange=()=>{
     setOpen(false)
@@ -90,13 +119,24 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
             )}
 
             {/* Add to Cart Button */}
+            {
+              productDetails?.totalStock===0 ?
+              <Button
+              aria-label="Add product to cart"
+              className="w-full opacity-65 cursor-not-allowed
+              sm:w-auto bg-black hover:bg-gray-800 text-white rounded-full py-3 px-6 font-semibold transition-colors shadow-md"
+            >
+              Out of Stock
+            </Button> :
             <Button
-              onClick={() => handleAddToCart(productDetails?._id)}
+              onClick={() => handleAddToCart(productDetails?._id,productDetails?.totalStock)}
               aria-label="Add product to cart"
               className="w-full sm:w-auto bg-black hover:bg-gray-800 text-white rounded-full py-3 px-6 font-semibold transition-colors shadow-md"
             >
               Add to Cart
             </Button>
+            }
+            
           </div>
 
           {/* Reviews Section */}

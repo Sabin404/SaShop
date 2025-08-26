@@ -16,10 +16,20 @@ const ProducTileShoping = ({ product, handleGetProductDetails, handleAddToCart }
               src={product?.image}
               className='w-full h-[300px] object-cover rounded-t-lg'
             />
-            {
-              product?.salePrice > 0 ?
-                <Badge className='absolute top-2 left-2 bg-red-500 hover:bg-red-700'>sale</Badge> : ''
-            }
+            {product?.totalStock === 0 ? (
+              <Badge className='absolute top-2 left-2 bg-red-500 hover:bg-red-700'>
+                Out of Stock
+              </Badge>
+            ) : product?.totalStock < 10 ? (
+              <Badge className='absolute top-2 left-2 bg-yellow-500 hover:bg-yellow-700'>
+                Only {product?.totalStock} left
+              </Badge>
+            ) : product?.salePrice > 0 ? (
+              <Badge className='absolute top-2 left-2 bg-green-500 hover:bg-green-700'>
+                Sale
+              </Badge>
+            ) : null}
+
           </div>
           <CardContent className={'p-4'}>
             <h2 className='text-xl font-bold mb-2'>{product.title}</h2>
@@ -37,9 +47,15 @@ const ProducTileShoping = ({ product, handleGetProductDetails, handleAddToCart }
           </CardContent>
         </div>
         <CardFooter>
-          <Button className='bg-black text-white hover:cursor-pointer'
-            onClick={() => handleAddToCart(product?._id)}
-          >Add to Cart</Button>
+          {
+            product?.totalStock === 0 ?
+              <Button className='bg-black text-white hover:cursor-pointer opacity-65 cursor-not-allowed'
+              >Out of Stock</Button> :
+              <Button className='bg-black text-white hover:cursor-pointer'
+                onClick={() => handleAddToCart(product?._id,product?.totalStock)}
+              >Add to Cart</Button>
+          }
+
         </CardFooter>
       </Card>
     </div>
