@@ -143,6 +143,11 @@ export const shoppingViewHeaderItems = [
     id: 'accessories',
     label: 'Accessories',
     path: '/shop/listing'
+   },
+  {
+    id: 'search',
+    label: 'Search',
+    path: '/shop/search'
   }
 ]
 

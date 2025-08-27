@@ -12,6 +12,7 @@ const shopProductRoute = require('./src/routes/shop/product.route');
 const shopCartRoute=require('./src/routes/shop/cart.route')
 const shopAddressRoute=require('./src/routes/shop/address.route')
 const shopOrderRouter=require('./src/routes/shop/order.route')
+const shopSearchRouter=require('./src/routes/shop/search.route')
 //middlewares
 
 // console.log("Inside index.js, Cloudinary keys:", {
@@ -44,6 +45,7 @@ app.use('/api/shop/products',shopProductRoute)
 app.use('/api/shop/cart',shopCartRoute)
 app.use('/api/shop/address',shopAddressRoute)
 app.use('/api/shop/order',shopOrderRouter)
+app.use('/api/shop/search',shopSearchRouter)
 
 //listening to the server
 app.listen(PORT, () => {

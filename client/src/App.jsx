@@ -21,6 +21,7 @@ import { Skeleton } from './components/ui/skeleton';
 import StripeSuccess from './pages/shopping-view/StripeSuccess';
 import StripeCancel from './pages/shopping-view/StripeCancel';
 import OrderSuccess from './pages/shopping-view/OrderSuccess';
+import Search from './pages/shopping-view/Search';
 
 function App() {
   const{isAuthenticated,user,loading}=useSelector(state=>state.auth);
@@ -66,6 +67,7 @@ function App() {
           <Route path='home' element={<Home/>} />
           <Route path='listing' element={<Listing/>} />
           <Route path='checkout' element={<Checkout/>} />
+          <Route path='search' element={<Search/>} />
           <Route path='account' element={<Account/>} />
           <Route path='stripe-success' element={<StripeSuccess/>} />
           <Route path='stripe-cancel' element={<StripeCancel/>} />

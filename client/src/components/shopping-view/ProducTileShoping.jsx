@@ -6,7 +6,7 @@ import { brandOptionsMap, categoryOptionsMap } from '@/config'
 
 const ProducTileShoping = ({ product, handleGetProductDetails, handleAddToCart }) => {
   // console.log(product);
-
+if (!product) return null;
   return (
     <div >
       <Card className='w-full max-w-sm mx-auto'>
@@ -32,7 +32,7 @@ const ProducTileShoping = ({ product, handleGetProductDetails, handleAddToCart }
 
           </div>
           <CardContent className={'p-4'}>
-            <h2 className='text-xl font-bold mb-2'>{product.title}</h2>
+            <h2 className='text-xl font-bold mb-2'>{product?.title}</h2>
             <div className='flex justify-between items-center mb-2'>
               <span className='text-sm'>{categoryOptionsMap[product?.category]}</span>
               <span className='text-sm'>{brandOptionsMap[product?.brand]}</span>
@@ -40,7 +40,7 @@ const ProducTileShoping = ({ product, handleGetProductDetails, handleAddToCart }
             <div className='flex justify-between items-center mb-2'>
               <span className={`font-semibold text-primary ${product.salePrice > 0 ? 'line-through' : ''}`}>${product?.price}</span>
               {
-                product.salePrice > 0 ? <span className='text-sm'>${product?.salePrice}</span> : ''
+                product.salePrice > 0 ? <span className='text-sm'>${product.salePrice}</span> : ''
               }
 
             </div>
