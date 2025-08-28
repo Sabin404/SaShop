@@ -128,7 +128,7 @@ const Home = () => {
             Shop by Category
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-            {categoriesWithIcon.map((item, index) => (
+            {categoriesWithIcon.map((item) => (
               <Card
                 onClick={() => handleNavigateToListingPage(item, 'category')}
                 key={item.id}

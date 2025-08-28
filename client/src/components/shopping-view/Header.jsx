@@ -44,7 +44,7 @@ function MenuItem() {
 }
 
 function HeaderRightContent() {
-  const { isAuthenticated, user } = useSelector(state => state.auth)
+  const { user } = useSelector(state => state.auth)
   // console.log(user);
   const { cartItems } = useSelector(state => state.shopCart)
   const [openCartSheet, setOpenCartSheet] = useState(false)
@@ -87,14 +87,14 @@ function HeaderRightContent() {
             <Avatar className='h-9 w-9 bg-black hover:cursor-pointer'>
               {/* <AvatarImage src={user.avatarUrl} alt={user.username} /> */}
               <AvatarFallback className='bg-primary text-white font-bold'>
-                {user.username[0]?.toUpperCase()}
+                {user?.username[0]?.toUpperCase() || "?"}
               </AvatarFallback>
             </Avatar>
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent side='bottom' className='w-56 mt-[10px]'>
           <DropdownMenuLabel>
-            Logged in as <span className="font-medium">{user.username}</span>
+            Logged in as <span className="font-medium">{user?.username}</span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="cursor-pointer"

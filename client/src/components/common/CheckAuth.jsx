@@ -8,6 +8,17 @@ const CheckAuth = ({ isAuthenticated, user, children }) => {
   // Avoid crashes if user is null/undefined
   const role = user?.role;
 
+  if (location.pathname === '/') {
+    if (!isAuthenticated) {
+      return <Navigate to="/auth/login" />;
+    }
+    if (role === "admin") {
+      return <Navigate to="/admin/dashboard" replace />;
+    } else {
+      return <Navigate to="/shop/home" replace />;
+    }
+  }
+
   // Redirect to login if not authenticated and trying to access protected routes
   if (
     !isAuthenticated &&

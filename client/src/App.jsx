@@ -24,54 +24,62 @@ import OrderSuccess from './pages/shopping-view/OrderSuccess';
 import Search from './pages/shopping-view/Search';
 
 function App() {
-  const{isAuthenticated,user,loading}=useSelector(state=>state.auth);
-  const dispatch= useDispatch();
-  useEffect(()=>{
+  const { isAuthenticated, user, loading } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+  useEffect(() => {
     dispatch(checkAuth());
-  },[dispatch])
-  
+  }, [dispatch])
 
-  if(loading){
+
+  if (loading) {
     return <Skeleton className="h-[200px] w-[800px] bg-black " />
   }
   return (
     <div className='flex flex-col overflow-hidden bg-white'>
       <Routes>
+        <Route
+          path='/'
+           element={
+            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+            </CheckAuth>
+          }
+
+        />
         <Route path='/auth' element={
           <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-            <Layout/>
+            <Layout />
           </CheckAuth>
         }>
-          <Route path='login' element={<Login/>} />
-          <Route path='register' element={<Register/>} />
+          <Route path='login' element={<Login />} />
+          <Route path='register' element={<Register />} />
         </Route>
         <Route path='/admin' element={
           <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-            <Admin/>
-          </CheckAuth>  
+            <Admin />
+          </CheckAuth>
         }>
           <Route path='dashboard' element={
             <CheckAuth isAuthenticated={isAuthenticated} user={user}>
               <Dashboard />
             </CheckAuth>
           } />
-          <Route path='orders' element={<Orders/>}/>
-          <Route path='products' element={<Products/>}/>
+          <Route path='orders' element={<Orders />} />
+          <Route path='products' element={<Products />} />
         </Route>
 
         <Route path='/shop' element={
           <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-            <Shopping/>
+            <Shopping />
           </CheckAuth>
         }>
-          <Route path='home' element={<Home/>} />
-          <Route path='listing' element={<Listing/>} />
-          <Route path='checkout' element={<Checkout/>} />
-          <Route path='search' element={<Search/>} />
-          <Route path='account' element={<Account/>} />
-          <Route path='stripe-success' element={<StripeSuccess/>} />
-          <Route path='stripe-cancel' element={<StripeCancel/>} />
-          <Route path='order-success' element={<OrderSuccess/>} />
+          <Route path='home' element={<Home />} />
+          <Route path='listing' element={<Listing />} />
+          <Route path='checkout' element={<Checkout />} />
+          <Route path='search' element={<Search />} />
+          <Route path='account' element={<Account />} />
+          <Route path='stripe-success' element={<StripeSuccess />} />
+          <Route path='stripe-cancel' element={<StripeCancel />} />
+          <Route path='order-success' element={<OrderSuccess />} />
         </Route>
         <Route path='*' element={<div>404 Not Found</div>} />
       </Routes>
