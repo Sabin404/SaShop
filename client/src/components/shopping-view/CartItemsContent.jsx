@@ -10,6 +10,8 @@ const CartItemsContent = React.memo(({ cartItem }) => {
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
 
+  // console.log(user.id);
+  
   if (!cartItem) return null;
 
   // product details nested inside productId
@@ -25,6 +27,8 @@ const CartItemsContent = React.memo(({ cartItem }) => {
   const total = isNaN(price) || isNaN(quantity) ? "0.00" : (price * quantity).toFixed(2);
 
   const userId = user?.userId;
+  // console.log(user);
+  
 
   const handleCartItemDelete = async () => {
     if (!userId || !product._id) return;
@@ -40,6 +44,7 @@ const CartItemsContent = React.memo(({ cartItem }) => {
   };
 
   const handleCartQuantity = (cartItem, action) => {
+    console.log("userId:", userId, "productId:", product?._id);
     if (!userId || !product._id) return;
 
     const currentQuantity = Number(cartItem?.quantity) || 1;
@@ -87,13 +92,13 @@ const CartItemsContent = React.memo(({ cartItem }) => {
 
 
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex items-center space-x-3 p-3 border-b-2  ">
       <img src={product?.image} alt={product?.title} className="w-20 h-20 rounded object-cover" />
 
       <div className="flex-1">
-        <h3 className="font-extrabold">{product?.title}</h3>
+        <h3 className="font-bold uppercase text-center">{product?.title}</h3>
 
-        <div className="flex items-center mt-1 gap-2">
+        <div className="flex items-center mt-1 gap-2 justify-evenly ">
           <Button
             disabled={quantity === 1}
             onClick={() => handleCartQuantity(cartItem, "minus")}
@@ -119,7 +124,7 @@ const CartItemsContent = React.memo(({ cartItem }) => {
         </div>
       </div>
 
-      <div className="flex flex-col items-end">
+      <div className="flex flex-col items-center">
         <p className="font-semibold">${total}</p>
 
         <Trash

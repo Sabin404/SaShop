@@ -4,33 +4,44 @@ import React from 'react'
 
 const ProductTile = ({product,setFormData ,handleDelete,setCurrentEditedId,setOpenCreateProductDialog}) => {
   return (
+    <div className="w-full max-w-xs mx-auto bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-lg overflow-hidden">
+  {/* Image */}
+  <img
+    src={product?.image}
+    alt={product?.title}
+    className="w-full h-48 object-cover"
+  />
+
+  {/* Content & Footer */}
+  <div className="p-4 flex flex-col justify-between h-30">
+    {/* Title & Price */}
     <div>
-      <Card className='w-full max-w-sm mx-auto'>
-        <div>
-          <div className='relative'>
-            <img src ={product?.image}
-              alt={product?.title}
-              className='w-full h-[300px] object-cover rounded-t-lg'
-            />
-          </div>
-          <CardContent>
-            <h2 className='text-xl font-bold mb-2'>{product.title}</h2>
-            <div className='flex justify-between items-center mb-2'>
-              <span className={` ${product?.salePrice>0 ?'line-through':''}`}>${product.price}</span>
-              <span className='text-lg font-bold'>{product.salePrice}</span>
-            </div>
-          </CardContent>
-          <CardFooter className='flex justify-between items-center'>
-            <Button onClick={()=>{
-              setOpenCreateProductDialog(true)
-              setCurrentEditedId(product?._id)
-              setFormData(product)
-            }}>Edit</Button>
-            <Button onClick={()=>handleDelete(product?._id)}>Delete</Button>
-          </CardFooter>
-        </div>
-      </Card>
+      <h2 className="text-lg font-semibold text-gray-900 truncate">{product.title}</h2>
+      <p className="text-gray-700 mt-2">${product.price}</p>
     </div>
+
+    {/* Buttons */}
+    <div className="flex justify-between mt-0">
+      <Button
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
+        onClick={() => {
+          setOpenCreateProductDialog(true)
+          setCurrentEditedId(product?._id)
+          setFormData(product)
+        }}
+      >
+        Edit
+      </Button>
+      <Button
+        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition"
+        onClick={() => handleDelete(product?._id)}
+      >
+        Delete
+      </Button>
+    </div>
+  </div>
+</div>
+
   )
 }
 

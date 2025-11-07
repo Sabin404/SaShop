@@ -94,72 +94,80 @@ const Products = () => {
   // console.log(productList, uploadedImageUrl,formData);
 
   return (
-    <div className="w-full px-4 py-6 md:px-8">
-      {/* Page Header */}
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-semibold tracking-tight text-gray-800">
-          Products
-        </h2>
-        <Button
-          onClick={() => setOpenCreateProductDialog(true)}
-          className="bg-gray-300 cursor-pointer hover:bg-primary/90 transition-all"
-        >
-          + Add New Product
-        </Button>
-      </div>
+    <div className="w-full px-4 py-6 md:px-8 bg-gray-50 min-h-screen">
+  {/* Page Header */}
+  <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+    <h2 className="text-2xl font-semibold tracking-tight text-gray-800">
+      Products
+    </h2>
+    <Button
+      onClick={() => setOpenCreateProductDialog(true)}
+      className="bg-gray-300 text-gray-800 font-medium px-4 py-2 rounded-lg hover:bg-primary/90 transition-all"
+    >
+      + Add New Product
+    </Button>
+  </div>
 
-      {/* Products Grid Placeholder */}
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {/* Replace this with product cards */}
-        <div className="col-span-full text-center text-gray-500">
-          {
-            productList && productList.length > 0 ?
-              productList.map(productItem => 
-              <ProductTile
-              handleDelete={handleDelete}
-                setCurrentEditedId={setCurrentEditedId}
-                product={productItem}
-                setFormData={setFormData}
-                setOpenCreateProductDialog={setOpenCreateProductDialog}
-              />) : null
-          }
-        </div>
-      </div>
-
-      {/* Drawer for Add Product */}
-      <Sheet
-        open={openCreateProductDialog}
-        onOpenChange={() => {
-          setOpenCreateProductDialog(false)
-          setCurrentEditedId(null)
-          setFormData(initialFormData)
-        }}>
-        <SheetContent side="right" className="w-full max-w-md overflow-auto bg-white p-6 shadow-xl">
-          <SheetHeader className="mb-4">
-            <SheetTitle className="text-xl font-semibold text-gray-800 ">
-              {currentEditedId == null ? "Add Product" : "Edit Product"}
-            </SheetTitle>
-          </SheetHeader>
-          <Imageupload
-            imageFile={imageFile}
-            setImageFile={setImageFile}
-            uploadedImageUrl={uploadedImageUrl}
-            setUploadedImageUrl={setUploadedImageUrl}
-            setImageLoadingState={setImageLoadingState}
-            imageLoadingState={imageLoadingState}
-            isEditMode={currentEditedId !== null}
-          />
-          <Form
-            formData={formData}
-            setFormData={setFormData}
-            onSubmit={onSubmit}
-            buttonText={currentEditedId == null ? "Add" : "Edit "}
-            formControls={addProductFormElements}
-            isBtnDisabled={!validForm()}
-          />
-        </SheetContent>
-      </Sheet>
+  {/* Products Grid */}
+  {productList && productList.length > 0 ? (
+    <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {productList.map((productItem) => (
+        <ProductTile
+          key={productItem._id}
+          handleDelete={handleDelete}
+          setCurrentEditedId={setCurrentEditedId}
+          product={productItem}
+          setFormData={setFormData}
+          setOpenCreateProductDialog={setOpenCreateProductDialog}
+        />
+      ))}
     </div>
+  ) : (
+    <div className="col-span-full text-center py-12 text-gray-500">
+      No products found.
+    </div>
+  )}
+
+  {/* Drawer for Add/Edit Product */}
+  <Sheet
+    open={openCreateProductDialog}
+    onOpenChange={() => {
+      setOpenCreateProductDialog(false)
+      setCurrentEditedId(null)
+      setFormData(initialFormData)
+      setImageFile(null)
+      setUploadedImageUrl('')
+    }}
+  >
+    <SheetContent side="right" className="w-full max-w-md overflow-auto bg-white p-6 shadow-xl rounded-lg">
+      <SheetHeader className="mb-4">
+        <SheetTitle className="text-xl font-semibold text-gray-800">
+          {currentEditedId == null ? "Add Product" : "Edit Product"}
+        </SheetTitle>
+      </SheetHeader>
+
+      <Imageupload
+        imageFile={imageFile}
+        setImageFile={setImageFile}
+        uploadedImageUrl={uploadedImageUrl}
+        setUploadedImageUrl={setUploadedImageUrl}
+        setImageLoadingState={setImageLoadingState}
+        imageLoadingState={imageLoadingState}
+        isEditMode={currentEditedId !== null}
+      />
+
+      <Form
+        formData={formData}
+        setFormData={setFormData}
+        onSubmit={onSubmit}
+        buttonText={currentEditedId == null ? "Add" : "Edit"}
+        formControls={addProductFormElements}
+        isBtnDisabled={!validForm()}
+      />
+    </SheetContent>
+  </Sheet>
+</div>
+
   )
 }
 

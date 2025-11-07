@@ -67,7 +67,7 @@ const Orders = () => {
                           ? "bg-green-500"
                           : orderItem.orderStatus === "rejected"
                           ? "bg-red-600"
-                          : "bg-black"
+                          : "bg-black text-white"
                       }`}
                     >
                       {orderItem.orderStatus}
@@ -75,7 +75,7 @@ const Orders = () => {
                   </TableCell>
                   <TableCell>${orderItem.totalAmount}</TableCell>
                   <TableCell>
-                    <Button
+                    <Button className='bg-black text-white'
                       onClick={() => handleFetchOrderDetails(orderItem._id)}
                     >
                       View Details

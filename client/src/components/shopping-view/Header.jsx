@@ -54,12 +54,14 @@ function HeaderRightContent() {
   const handleLogout = () => {
     dispatch(logoutUser())
   }
-  // console.log(cartItems);
+// console.log(user);
+
+
   useEffect(() => {
-    if (user?.userId && (!cartItems || cartItems.length === 0)) {
-      dispatch(fetchCartItems(user.userId));
-    }
-  }, [dispatch, user?.userId]);
+  if (user?.userId) {
+    dispatch(fetchCartItems(user.userId));
+  }
+}, [dispatch, user?.userId]);
   // console.log(cartItems);
   return (
     <div className='flex items-center gap-4'>
@@ -92,22 +94,22 @@ function HeaderRightContent() {
             </Avatar>
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent side='bottom' className='w-56 mt-[10px]'>
-          <DropdownMenuLabel>
-            Logged in as <span className="font-medium">{user?.username}</span>
+        <DropdownMenuContent side='bottom' className='w-56 mt-[10px] bg-white'>
+          <DropdownMenuLabel className={'text-center'}>
+            <span >Logged in as</span> <span className="font-medium">{user?.username}</span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer"
+          <DropdownMenuItem className="cursor-pointer "
             onClick={() => navigate('/shop/account')}
           >
-            <UserCog className='w-4 h-4 mr-2' />
-            Account
+            <UserCog className='w-4 h-4 mr-2 ' />
+            <span className='font-bold'>Account</span>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer"
             onClick={handleLogout}
           >
             <LogOut className='w-4 h-4 mr-2' />
-            Logout
+            <span className='font-bold'>Logout</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

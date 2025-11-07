@@ -3,14 +3,19 @@ import { Outlet } from 'react-router-dom';
 
 const Layout = () => {
   return (
-    <div className='flex min-h-screen w-full'>
-    <div className='hidden lg:flex items-center justify-center bg-black'>
-      <div className='max-w-md space-y-6 text-center text-primary-foreground'>
-        <h1 className='text-4xl font-extrabold tracking-tight'>Welcome to Our Application</h1>
+    <div className="min-h-screen w-full grid lg:grid-cols-2">
+      {/* Left Section */}
+      <div className="hidden lg:flex flex-col justify-center items-center bg-black text-white p-10">
+        <h1 className="text-5xl font-bold mb-4">Welcome </h1>
+        <p className="text-lg opacity-80 max-w-md text-center">
+          Sign in or create an account to shop effortlessly.
+        </p>
       </div>
-    </div>
-      <div className='flex-1 items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8'>
-        <Outlet/>
+
+
+      {/* Right Section */}
+      <div className="flex flex-col justify-center items-center p-8 bg-background">
+        <Outlet />
       </div>
     </div>
   )

@@ -39,18 +39,23 @@ const Register = () => {
     })
   }
   return (
-    <div className='mx-auto w-full max-w-md space-y-6'>
-      <h2 className='text-2xl font-bold text-center'>Create new account</h2>
-      <p className='text-center text-sm text-gray-600'>
-        Already have an account? <Link to='/auth/login' className='text-blue-600 hover:underline'>Login here</Link>
-      </p>
-    <Form formControls={registerFormControl} 
-      buttonText={'Signup'}
-      formData={formData}
-      setFormData={setFormData}
-      onSubmit={onSubmit}
-    />
-    </div>
+    <div className="mx-auto w-full max-w-md space-y-6 bg-white p-8 rounded-xl shadow-lg border border-gray-200 hover:-translate-y-1 transition-transform">
+  <h2 className="text-2xl font-bold text-center text-gray-900">Create new account</h2>
+  <p className="text-center text-sm text-gray-500">
+    Already have an account?{' '}
+    <Link to="/auth/login" className="text-blue-600 font-semibold hover:underline">
+      Login here
+    </Link>
+  </p>
+  <Form
+    formControls={registerFormControl}
+    buttonText={'Signup'}
+    formData={formData}
+    setFormData={setFormData}
+    onSubmit={onSubmit}
+  />
+</div>
+  
   )
 }
 

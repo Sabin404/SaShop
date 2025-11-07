@@ -5,12 +5,13 @@ import { Label } from "../ui/label";
 import { StarIcon } from "lucide-react";
 import { Input } from "../ui/input";
 
-import { addToCart } from "@/store/shop/cart-slice";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { setProductDetails } from "@/store/shop/product-slice";
 import StarRating from "../common/StarRating";
 import { addReview, getReview } from "@/store/shop/review-slice";
+import { checkAuth } from "@/store/auth-slice/authSlice";
 
 const ProductDetails = ({ open, setOpen, productDetails }) => {
   const { cartItems } = useSelector(state => state.shopCart)
@@ -38,24 +39,26 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
       // console.log(data);
 
       if (data?.payload?.success) {
-        toast.success(data.payload.message || "Review added successfully",{
-          position:'top-center',
-          duration:3000
-          
+        toast.success(data.payload.message || "Review added successfully", {
+          position: 'top-center',
+          duration: 3000
+
         });
         dispatch(getReview(productDetails._id));
         setReviewMsg("");
         setRating(0);
       } else {
-        toast.error(data?.payload?.message || "You need to buy product to review it",{
-           position:'top-center',
-          duration:3000
+        toast.error(data?.payload?.message || "You need to buy product to review it", {
+          position: 'top-center',
+          duration: 3000
         });
       }
     });
   };
 
   const handleAddToCart = (getCurrentId, getTotalStock) => {
+    // if (!user?.id) return toast.error("Please login first");
+
     const getCartItems = cartItems || [];
 
     const indexOfCurrItem = getCartItems.findIndex(
@@ -69,31 +72,34 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
     const newQuantity = currentQuantity + 1;
 
     if (newQuantity > getTotalStock) {
-      toast.error(`Only ${getTotalStock} items available. You've already added ${currentQuantity}.`, {
+      return toast.error(`Only ${getTotalStock} items available. You've already added ${currentQuantity}.`, {
         duration: 3000,
         position: 'top-center',
       });
-      return;
     }
+    // console.log(user);
+
 
     dispatch(addToCart({
-      userId: user?.userId,
+      userId: user.id,
       productId: getCurrentId,
       quantity: 1
     })).then((data) => {
       if (data?.payload?.success) {
-        toast.success(data.payload.message || "Product added successfully", {
+        toast.success("Product added successfully", {
           duration: 3000,
           position: "top-center",
         });
+        dispatch(fetchCartItems(user.id)); // fetch updated cart
       } else {
-        toast.error(data.payload.message || "Failed to add product", {
+        toast.error("Failed to add product", {
           duration: 3000,
           position: "top-center",
         });
       }
     });
   };
+
 
   // console.log(productDetails);
   const handleChange = () => {
@@ -106,6 +112,11 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
   useEffect(() => {
     if (productDetails !== null) dispatch(getReview(productDetails?._id))
   }, [productDetails])
+  useEffect(() => {
+    if (user?.userId) {
+      dispatch(fetchCartItems(user.userId));
+    }
+  }, [dispatch, user?.userId]);
 
   const avgReview = reviews && reviews.length > 0 ? reviews.reduce((sum, item) =>
     sum + item.reviewValue, 0) / reviews.length : 0

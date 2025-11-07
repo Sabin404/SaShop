@@ -17,10 +17,10 @@ const registerUser = createAsyncThunk('auth/register',
       }
     });
     return response.data;
-    }
+  }
 )
 const loginUser = createAsyncThunk('auth/login',
-  async(formData)=>{
+  async (formData) => {
     const response = await axios.post('http://localhost:3000/api/auth/login', formData, {
       withCredentials: true,
       headers: {
@@ -29,28 +29,34 @@ const loginUser = createAsyncThunk('auth/login',
         'Expires': '0',
         'Pragma': 'no-cache'
       }
+      
     });
+    const user = response.data.user;
+    // console.log(user);
+    
+      sessionStorage.setItem("user", JSON.stringify(user));
+      // return user;
     return response.data;
-    }
+  }
 )
 
 const logoutUser = createAsyncThunk('auth/logout',
-  async()=>{
+  async () => {
     const response = await axios.post('http://localhost:3000/api/auth/logout', {}, {
       withCredentials: true,
     });
     return response.data;
-    }
+  }
 )
 
 export const checkAuth = createAsyncThunk('auth/checkauth',
-  async()=>{
+  async () => {
     const response = await axios.get('http://localhost:3000/api/auth/check-auth', {
       withCredentials: true,
     });
-    
+
     return response.data;
-    }
+  }
 )
 
 
@@ -59,49 +65,59 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser:(state,action)=>{}
+    setUser: (state, action) => {
+      state.user = action.payload;
+      state.isAuthenticated = true;
+    },
+    logoutUser: (state) => {
+      state.user = null;
+      state.token = null;
+      state.isAuthenticated = false;
+      sessionStorage.removeItem("jwtToken");
+    },
   },
-  extraReducers:(builder)=>{
+  extraReducers: (builder) => {
     builder
-    .addCase(registerUser.pending, (state)=>{
-      state.loading=true;
-    }).addCase(registerUser.fulfilled, (state, action)=>{
-      state.loading=false;
-      state.isAuthenticated=false;
-      state.user=null;
-    }).addCase(registerUser.rejected, (state, action)=>{
-      state.loading=false;
-      state.isAuthenticated=false;
-      state.user=null;;
-    }).addCase(loginUser.pending, (state)=>{
-      state.loading=true;
-    }).addCase(loginUser.fulfilled, (state, action)=>{
-      state.loading=false;
-      state.isAuthenticated=action.payload.success? true : false;
-      state.user=action.payload.sucess? action.payload.user : null;
-    }).addCase(loginUser.rejected, (state, action)=>{
-      state.loading=false;
-      state.isAuthenticated=false;
-      state.user=null;;
-    }).addCase(checkAuth.pending, (state)=>{
-      state.loading=true;
-    }).addCase(checkAuth.fulfilled, (state, action)=>{
-      state.loading=false;
-      state.isAuthenticated=action.payload.success? true : false;
-      state.user=action.payload.success? action.payload.user : null;
-    }).addCase(checkAuth.rejected, (state, action)=>{
-      state.loading=false;
-      state.isAuthenticated=false;
-      state.user=null;;
-    }).addCase(logoutUser.fulfilled, (state, action)=>{
-      state.loading=false;
-      state.isAuthenticated=false;
-      state.user=null;;
-    })
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+      }).addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.user = null;
+      }).addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.user = null;;
+      }).addCase(loginUser.pending, (state) => {
+        state.loading = true;
+      }).addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = action.payload.success ? true : false;
+        state.user = action.payload.success ? action.payload.user : null;
+        console.log(action.payload)
+      }).addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.user = null;;
+      }).addCase(checkAuth.pending, (state) => {
+        state.loading = true;
+      }).addCase(checkAuth.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = action.payload.success ? true : false;
+        state.user = action.payload.success ? action.payload.user : null;
+      }).addCase(checkAuth.rejected, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.user = null;;
+      }).addCase(logoutUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.user = null;;
+      })
   }
 
 })
 
 export const { setUser } = authSlice.actions;
 export default authSlice.reducer;
-export { registerUser , loginUser,logoutUser };
+export { registerUser, loginUser, logoutUser };

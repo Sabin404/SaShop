@@ -23,7 +23,7 @@ const Login = () => {
             position: 'top-center',
           }
         );
-      }else{
+      } else {
         toast.error(response?.payload?.message || "Unauthorized",
           {
             duration: 3000,
@@ -34,18 +34,23 @@ const Login = () => {
     })
   }
   return (
-    <div className='mx-auto w-full max-w-md space-y-6'>
-      <h2 className='text-2xl font-bold text-center'>Access your account</h2>
-      <p className='text-center text-sm text-gray-600'>
-        Don't have an account? <Link to='/auth/register' className='text-blue-600 hover:underline'>Register here</Link>
+    <div className="mx-auto w-full max-w-md space-y-6 bg-white p-8 rounded-xl shadow-lg border border-gray-200 hover:-translate-y-1 transition-transform">
+      <h2 className="text-2xl font-bold text-center text-gray-900">Access your account</h2>
+      <p className="text-center text-sm text-gray-500">
+        Don't have an account?{' '}
+        <Link to="/auth/register" className="text-blue-600 font-semibold hover:underline">
+          Register here
+        </Link>
       </p>
-      <Form formControls={loginFormControl}
+      <Form
+        formControls={loginFormControl}
         buttonText={'Login'}
         formData={formData}
         setFormData={setFormData}
         onSubmit={onSubmit}
       />
     </div>
+
   )
 }
 

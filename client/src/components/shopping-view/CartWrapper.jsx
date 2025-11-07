@@ -26,71 +26,64 @@ const CartWrapper = ({ cartItems, setOpenCartSheet }) => {
   const skeletonCount = cartItems && cartItems.length > 0 ? cartItems.length : 0;
 
   return (
-    <SheetContent>
-      <SheetHeader>
-        <SheetTitle>Your Cart</SheetTitle>
-      </SheetHeader>
+    <SheetContent className="bg-white text-black flex flex-col h-full">
+  <SheetHeader>
+    <SheetTitle className="text-center border-b p-2 font-bold uppercase">
+      Your Cart
+    </SheetTitle>
+  </SheetHeader>
 
-      <div className="mt-8 space-y-4">
-        {isLoading ? (
-          // Render skeleton rows equal to cartItems count or default 3
-          <>
-            {[...Array(skeletonCount)].map((_, i) => (
-              <div key={i} className="flex items-center space-x-4 animate-pulse">
-                <Skeleton className="w-20 h-20 rounded bg-gray-300" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-6 w-3/4 bg-gray-300" />
-                  <div className="flex items-center gap-2">
-                    <Skeleton className="h-8 w-8 rounded-full bg-gray-300" />
-                    <Skeleton className="h-6 w-6 bg-gray-300" />
-                    <Skeleton className="h-8 w-8 rounded-full bg-gray-300" />
-                  </div>
-                </div>
-                <div className="flex flex-col items-end space-y-2">
-                  <Skeleton className="h-6 w-16 bg-gray-300" />
-                  <Skeleton className="h-6 w-6 rounded-full bg-gray-300" />
-                </div>
-              </div>
-            ))}
-          </>
-        ) : cartItems && cartItems.length > 0 ? (
-          cartItems.map(item => (
-            <CartItemsContent
-              key={item._id || item.productId?._id || item.productId}
-              cartItem={item}
-            />
-          ))
-        ) : (
-          <p>Your cart is empty.</p>
-        )}
-      </div>
-
-      <div className="mt-8 space-y-4">
-        <div className="flex justify-between items-center">
-          {isLoading ? (
-            <>
-              <Skeleton className="h-6 w-16 bg-gray-300" />
-              <Skeleton className="h-6 w-20 bg-gray-300" />
-            </>
-          ) : (
-            <>
-              <span className="font-bold">Total</span>
-              <span className="font-bold">${totalCartAmount}</span>
-            </>
-          )}
+  <div className="flex-1 overflow-y-auto mt-4 space-y-4 px-2">
+    {isLoading ? (
+      [...Array(skeletonCount)].map((_, i) => (
+        <div key={i} className="flex items-center space-x-4 animate-pulse">
+          <Skeleton className="w-20 h-20 rounded bg-gray-300" />
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-6 w-3/4 bg-gray-300" />
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-8 w-8 rounded-full bg-gray-300" />
+              <Skeleton className="h-6 w-6 bg-gray-300" />
+              <Skeleton className="h-8 w-8 rounded-full bg-gray-300" />
+            </div>
+          </div>
+          <div className="flex flex-col items-end space-y-2">
+            <Skeleton className="h-6 w-16 bg-gray-300" />
+            <Skeleton className="h-6 w-6 rounded-full bg-gray-300" />
+          </div>
         </div>
-      </div>
+      ))
+    ) : cartItems && cartItems.length > 0 ? (
+      cartItems.map((item) => (
+        <CartItemsContent
+          key={item._id || item.productId?._id || item.productId}
+          cartItem={item}
+        />
+      ))
+    ) : (
+      <p className="text-center text-gray-500">Your cart is empty.</p>
+    )}
+  </div>
 
+  {/* Total and Checkout fixed at bottom */}
+  <div className="border-t p-3 bg-white flex flex-col gap-3">
+    <div className="flex justify-between font-bold text-lg">
+      <span>Total</span>
+      <span>${totalCartAmount}</span>
+    </div>
 
-      <Button
-        onClick={() => {
-          navigate('/shop/checkout')
-          setOpenCartSheet(false)
-        }}
-        className="w-full mt-6" disabled={isLoading}>
-        Checkout
-      </Button>
-    </SheetContent>
+    <Button
+      onClick={() => {
+        navigate("/shop/checkout");
+        setOpenCartSheet(false);
+      }}
+      disabled={isLoading || cartItems.length === 0}
+      className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-900 transition"
+    >
+      Checkout
+    </Button>
+  </div>
+</SheetContent>
+
   );
 };
 
